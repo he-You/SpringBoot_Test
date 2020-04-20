@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heyou.springboot.demo.dao.UserDao">
+
+    <resultMap type="com.heyou.springboot.demo.entity.User" id="UserMap">
+        <result property="sn" column="sn" jdbcType="INTEGER"/>
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select
+          sn, id, username, password
+        from mytest_db.user
+        where sn = #{sn}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+          sn, id, username, password
+        from mytest_db.user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserMap">
+        select
+          sn, id, username, password
+        from mytest_db.user
+        <where>
+            <if test="sn != null">
+                and sn = #{sn}
+            </if>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="sn" useGeneratedKeys="true">
+        insert into mytest_db.user(id, username, password)
+        values (#{id}, #{username}, #{password})
+    </insert>
+
+    <insert id="insertList" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into user
+        ( sn,id,username,password)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.sn},
+            (SELECT REPLACE(UUID(), '-', '') AS id),
+            #{item.username},
+            #{item.password}
+            )
+        </foreach>
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update mytest_db.user
+        <set>
+            <if test="id != null and id != ''">
+                id = #{id},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+        </set>
+        where sn = #{sn}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from mytest_db.user where sn = #{sn}
+    </delete>
+
+</mapper>
