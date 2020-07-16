@@ -2,6 +2,7 @@ package com.heyou.springboot.demo;
 
 import com.heyou.springboot.demo.entity.User;
 import com.heyou.springboot.demo.service.AsynService;
+import org.apache.commons.collections4.ListUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class DemoApplicationTests {
     }
 
     @Test
-    public void write() {
+    public void write() throws InterruptedException {
         List<User> userList = new ArrayList<>();
-        for(int i=0;i<10000;i++){
+        for(int i=1;i<=10000;i++){
             User user = new User();
             user.setSn(i);
             user.setUsername("heyou-"+i);
@@ -32,5 +33,13 @@ public class DemoApplicationTests {
             userList.add(user);
             //asynService.batchInsertData();
         }
+        long startTime = System.currentTimeMillis();
+        //asynService.batchInsertData(userList);
+        List<List<User>> subs = ListUtils.partition(userList, 100);
+        for (List<User> users:subs){
+            asynService.batchInsertData(users);
+        }
+        long used = System.currentTimeMillis() - startTime;
+        System.out.println(used);
     }
 }
