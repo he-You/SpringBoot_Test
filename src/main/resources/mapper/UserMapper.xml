@@ -88,4 +88,8 @@
         delete from mytest_db.user where sn = #{sn}
     </delete>
 
+    <insert id="add">
+        delete from mytest_db.user where sn = #{sn}
+    </insert>
+
 </mapper>

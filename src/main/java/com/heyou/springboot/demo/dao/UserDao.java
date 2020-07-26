@@ -71,4 +71,6 @@ public interface UserDao {
      */
     int deleteById(Integer sn);
 
+    int add(@Param("sn")int sn,@Param("id")String id);
+
 }

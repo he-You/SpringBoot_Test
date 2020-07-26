@@ -14,5 +14,7 @@ public interface AsynService {
      */
     void writeData(String data);
 
-    void batchInsertData(List<User> users);
+    void batchInsertData(List<User> users) throws Exception;
+
+    void insertLog(int sn,String id);
 }

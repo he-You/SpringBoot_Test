@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -29,7 +30,14 @@ public class AsynServiceImpl implements AsynService {
     }
 
     @Override
-    public void batchInsertData(List<User> users) {
+    // @Transactional(rollbackFor = Exception.class)
+    public void batchInsertData(List<User> users) throws Exception {
         userDao.insertList(users);
+        throw new InterruptedException("test");
+    }
+
+    @Override
+    public void insertLog(int sn, String id) {
+        userDao.add(sn,id);
     }
 }
